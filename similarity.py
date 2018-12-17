@@ -1,4 +1,6 @@
 # coding=utf-8
+# Functions to evaluate similarity of patent documents,
+# and to evaluate the accuracy of those similarity judgments.
 
 import math
 import os
@@ -124,15 +126,21 @@ def evaluate_ranking(comparator, ranked, datapath="mappings.tsv"):
     datadic = dict([(x.split("\t")[1], x) for x in data])
     ipcdic = dict([(x[0], extract_ipcs(x[1])) for x in datadic.items()])
     krids = set(datadic.keys())
+    usids = set([x.split("\t")[0] for x in datadic.values()])
+    country = "KR"
     if comparator_id not in krids: # no data to work with
-        return
+        if comparator_id in usids:
+            country = "US"
+            datadic = dict([(x.split("\t")[0], x) for x in data])
+        else:
+            return
     thisline = datadic[comparator_id]
     these_ipcs = extract_ipcs(thisline)
     precision = 0
     denominator = len(ranked)
     for r in ranked:
         r_id = id_from_filepath(r[1])
-        if r_id not in krids: # file excluded e.g. due to divisional US application
+        if r_id not in krids | usids: # file excluded e.g. due to divisional US application
             denominator -= 1
             continue
         thatline = datadic[r_id]
@@ -150,9 +158,10 @@ def evaluate_ranking(comparator, ranked, datapath="mappings.tsv"):
     return average_precision
 
 
-def test_similarity(filepath=None, metric=cosine_sim, directory="KR", indexpath="KR.index", runs=100, cutoff=5):
+def test_similarity(metric=cosine_sim, directory="KR", indexpath="KR.index", runs=100, cutoff=5):
 # Runs basic sanity checks and then does test runs comparing in-corpus files to each other to obtain MAP,
 # using IPC matches as a proxy for relevance.
+# Running these tests also creates the .best files, speeding up search performance.
     this = {"a":1, "b":1, "c":0}
     that = {"a":1, "b":0, "c":1}
     result = metric(this, this)

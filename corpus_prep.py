@@ -460,3 +460,40 @@ def consolidate_logs(directory=".", prefix="uspto-kr", suffix="-2.tsv"):
     data = [x for x in data if x[1] not in exclude]
     data.sort()
     return data
+
+
+def move_files(src, dest, mapping_path="mappings.tsv", exclude=[".pdf"]): # move files and leave supernumerary files behind
+    import shutil
+    usdict = dict([(x.split("\t")[0],x) for x in open(mapping_path).read().split("\n")])
+    krdict = dict([(x.split("\t")[1],x) for x in open(mapping_path).read().split("\n")])
+    usids = set(usdict.keys())
+    krids = set(krdict.keys())
+    print list(usids)[:10]
+    print list(krids)[:10]
+    krdir_old = os.path.join(src, "KR")
+    krdir_new = os.path.join(dest, "KR")
+    usdir_old = os.path.join(src, "US")
+    usdir_new = os.path.join(dest, "US")
+    if not os.path.exists(krdir_new):
+        os.mkdir(krdir_new)
+    krfiles = os.listdir(krdir_old)
+    print len(krfiles)
+    for filename in krfiles:
+        fileid = filename.split(".")[0]
+        if any([(x in filename) for x in exclude]):
+            continue
+        if fileid not in krids:
+            continue
+        oldpath = os.path.join(krdir_old, filename)
+        shutil.copy(oldpath, krdir_new)
+    if not os.path.exists(usdir_new):
+        os.mkdir(usdir_new)
+    usfiles = [x for x in os.listdir(usdir_old) if not any([(y in x) for y in exclude])]
+    for filename in usfiles:
+        fileid = filename.split(".")[0]
+        if any([(x in filename) for x in exclude]):
+            continue
+        if fileid not in usids:
+            continue
+        oldpath = os.path.join(usdir_old, filename)
+        shutil.copy(oldpath, usdir_new)
