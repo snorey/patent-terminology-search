@@ -1,0 +1,13 @@
+# Don't track content of these folders
+KO/
+US/
+
+# Compiled files
+*.pyc
+*.index
+*.tsv
+
+# Zipped files
+*.gz
+*.zip
+

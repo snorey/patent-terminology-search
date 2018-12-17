@@ -1,0 +1,39 @@
+<!-- input form-->
+<html>
+<head>
+<title>KR/US patent terminology search</title>
+</head>
+<body>
+<h1>KR/US patent terminology search</h1>
+<form action = "/cgi-bin/search.py" method = "post">
+Search a database of more than 4000 matched pairs of KR and US patents.
+<h2>Terminology search</h2>
+<p>If you want to include or exclude certain terms in either the US or Korean patents, enter them here.  If you do not provide either a term to include or the text of a patent (below), you will receive only a random list of patent pairs.<br/>
+Include (KR): <input type = "text" name = "include_kr" /> 
+<input type = "radio" name = "include_kr_type" value="all" checked>All words
+<input type = "radio" name = "include_kr_type" value="exact">Exact phrase
+<input type = "radio" name = "include_kr_type" value="regex">Regular expression
+<br/>
+Exclude (KR): <input type = "text" name = "exclude_kr" />
+<input type = "radio" name = "exclude_kr_type" value="all" checked>All words
+<input type = "radio" name = "exclude_kr_type" value="exact">Exact phrase
+<input type = "radio" name = "exclude_kr_type" value="regex">Regular expression
+<br/>
+Include (US): <input type = "text" name = "include_us" />
+<input type = "radio" name = "include_us_type" value="all" checked>All words
+<input type = "radio" name = "include_us_type" value="exact">Exact phrase
+<input type = "radio" name = "include_us_type" value="regex">Regular expression
+<br/>
+Exclude (US): <input type = "text" name = "exclude_us" />
+<input type = "radio" name = "exclude_us_type" value="all" checked>All words
+<input type = "radio" name = "exclude_us_type" value="exact">Exact phrase
+<input type = "radio" name = "exclude_us_type" value="regex">Regular expression
+<br/>
+<input type = "submit" value = "Submit" />
+<h2>Patents like this</h2>
+<p>If you are working with a specific patent, paste the text of the patent here to receive results ranked by their similarity to the patent.  If no text is provided, the text of the terminology query (above) will be used for ranking purposes.</p>
+Patent text: <textarea name = "patent_text"></textarea>  <br />
+<input type = "submit" value = "Submit" />
+</form>
+</body>
+</html>
